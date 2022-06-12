@@ -21,7 +21,7 @@ async def _(
     img_list = extract_image_urls(message=message)
     for i in img_list:
         img = await open_img_from_url(i)
-        result = await smms.upload_img(img=img, user_id=event.user_id, tag="aw")
+        result = await smms.upload_img(img=img, user_id=event.user_id, tag=tag)
         if result.success:
             msg = f"上传成功!\n标签: {tag}\n文件名: {result.data.storename}"
             await upload.finish(message=msg)
