@@ -38,3 +38,6 @@ class SMMS:
         if parsed_json.success:
             self.UpdateDB(user_id=user_id, tag=tag, parsed_json=parsed_json)
         return parsed_json
+
+    async def delete_msg(self, user_id: int, storename: str):
+        return

@@ -16,9 +16,7 @@ class ImageTable(pw.Model):
 
     class Meta:
         database = db
-        primary_key = pw.CompositeKey(
-            "user_id", "tag", "store_name", "img_url", "hash"
-        )
+        primary_key = pw.CompositeKey("user_id", "tag", "store_name", "img_url", "hash")
 
 
 if not path.exists(db_path):
