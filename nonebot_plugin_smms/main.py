@@ -1,11 +1,15 @@
 from httpx import AsyncClient
 from pathlib import Path
-from aiofile import async_open
-from config import Config
-from database import ImageTable
-from schema import ResponseData
+from .database import ImageTable
+from .schema import ResponseData
 
 root = Path(__file__).parent.absolute()
+
+
+async def open_img_from_url(url: str):
+    async with AsyncClient() as client:
+        resp = await client.get(url=url)
+    return resp.content
 
 
 class SMMS:
@@ -14,7 +18,7 @@ class SMMS:
     def __init__(self, token: str) -> None:
         self.headers = {"Authorization": token}
 
-    def UpdateDB(self, user_id:int, tag:str, parsed_json: ResponseData):
+    def UpdateDB(self, user_id: int, tag: str, parsed_json: ResponseData):
         ImageTable.create(
             user_id=user_id,
             tag=tag,
@@ -23,25 +27,14 @@ class SMMS:
             delete_url=parsed_json.data.delete,
         )
 
-    async def upload_img(self, img: str, user_id: int, tag:str):
-        async with async_open(img, "rb") as f:
-            content = await f.read()
+    async def upload_img(self, img: bytes, user_id: int, tag: str):
         async with AsyncClient(timeout=100) as client:
             resp = await client.post(
                 url=self.base_url + "upload",
                 headers=self.headers,
-                files={"smfile": content},
+                files={"smfile": img},
             )
         parsed_json = ResponseData(**resp.json())
         if parsed_json.success:
             self.UpdateDB(user_id=user_id, tag=tag, parsed_json=parsed_json)
-            return f"Uplaod Success, img_url:{parsed_json.data.url}"
-        return f"Uplaod failed {parsed_json.message}"
-
-
-import asyncio
-
-smms = SMMS(token=Config.token)
-img = root / "usao.png"
-res = asyncio.run(smms.upload_img(img=img, user_id=1366160279, tag="USAO"))
-print(res)
+        return parsed_json
