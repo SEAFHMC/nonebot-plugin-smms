@@ -12,12 +12,12 @@ class ImageTable(pw.Model):
     tag = pw.CharField()
     store_name = pw.CharField()
     img_url = pw.CharField()
-    delete_url = pw.CharField()
+    hash = pw.CharField()
 
     class Meta:
         database = db
         primary_key = pw.CompositeKey(
-            "user_id", "tag", "store_name", "img_url", "delete_url"
+            "user_id", "tag", "store_name", "img_url", "hash"
         )
 
 

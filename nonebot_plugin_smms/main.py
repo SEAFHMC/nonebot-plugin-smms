@@ -24,7 +24,7 @@ class SMMS:
             tag=tag,
             store_name=parsed_json.data.storename,
             img_url=parsed_json.data.url,
-            delete_url=parsed_json.data.delete,
+            hash=parsed_json.data.hash,
         )
 
     async def upload_img(self, img: bytes, user_id: int, tag: str):
